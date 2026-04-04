@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScanSure — Vera AI</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fdf0f4;
+      --s1: #fce4ec;
+      --s2: #f8d7e3;
+      --rose: #e8699a;
+      --rose2: #f48ab5;
+      --rose3: #ffc2d9;
+      --glow: rgba(232, 105, 154, 0.1);
+      --border: rgba(232, 105, 154, 0.3);
+      --bdim: rgba(232, 105, 154, 0.12);
+      --text: #3d1a2e;
+      --muted: #b07090;
+      --dim: rgba(232, 105, 154, 0.05);
+      --cream: #fff5f8;
+      --deep: #7d2d52;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: radial-gradient(circle at calc(50% - 177px) 50%, #ffb3d1 0%, #ffe0ec 30%, #ffffff 65%);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 400;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(253, 240, 244, 0.97);
+      border-bottom: 1px solid var(--bdim);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 30;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--deep);
+    }
+
+    .logo-gem {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f48ab5 0%, #c04575 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(232, 105, 154, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      flex-shrink: 0;
+    }
+
+    .logo-gem svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .logo-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--deep);
+      letter-spacing: 2px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--deep);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--rose);
+      box-shadow: 0 0 8px var(--rose);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.7)
+      }
+    }
+
+    .hdr-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hbtn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--rose);
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      letter-spacing: .3px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .hbtn:hover {
+      background: var(--glow);
+    }
+
+    .hbtn.active {
+      background: rgba(232, 105, 154, .16);
+      color: var(--deep);
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── AVATAR ZONE ── */
+    .av-zone {
+      flex: 1.25;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse 85% 100% at 50% 45%, rgba(244, 138, 181, 0.45) 0%, rgba(244, 138, 181, 0.2) 50%, transparent 85%);
+    }
+
+    /* Soft decorative circles */
+    .av-zone::before {
+      content: '';
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244, 138, 181, 0.3) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      pointer-events: none;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: min(430px, 90%);
+      height: min(600px, 88%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Soft rotating petal ring */
+    .av-ring {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(232, 105, 154, 0.18);
+      animation: spin 20s linear infinite;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+    }
+
+    .av-ring::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 12px #ff1493, 0 0 24px #ff1493, 0 0 40px #ff1493, 0 0 60px rgba(255, 20, 147, 0.8);
+    }
+
+    .av-ring2 {
+      position: absolute;
+      width: 370px;
+      height: 370px;
+      border-radius: 50%;
+      border: 1px solid rgba(232, 105, 154, 0.08);
+      animation: spin 30s linear infinite reverse;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+    }
+
+    @keyframes spin {
+      to {
+        transform: translate(-50%, -60%) rotate(360deg);
+      }
+    }
+
+    #vera-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 24px 48px rgba(232, 105, 154, 0.2));
+    }
+
+    .av-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 140px;
+      background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .vera-badge {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .vera-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 6px;
+      color: var(--deep);
+      text-shadow: 0 0 28px rgba(232, 105, 154, .35);
+    }
+
+    .vera-role {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--deep);
+      letter-spacing: 2px;
+    }
+
+    .waveline {
+      display: flex;
+      align-items: center;
+      gap: 2.5px;
+      height: 20px;
+    }
+
+    .wb {
+      width: 2.5px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(232, 105, 154, .25);
+      transition: height .08s;
+    }
+
+    .wb.lit {
+      background: var(--rose);
+    }
+
+    .av-ctrls {
+      position: absolute;
+      bottom: 25px;
+      left: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 5;
+    }
+
+    .cbtn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 15px;
+      border-radius: 11px;
+      background: rgba(253, 240, 244, .9);
+      border: 1px solid var(--border);
+      color: var(--deep);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Nunito', sans-serif;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+    }
+
+    .cbtn:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+      background: var(--glow);
+    }
+
+    .cbtn.round {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border-radius: 50%;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .cbtn.rec {
+      border-color: rgba(220, 50, 50, .6);
+      color: #f87171;
+      background: rgba(220, 50, 50, .1);
+      animation: mpulse 1s infinite;
+    }
+
+    @keyframes mpulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(220, 50, 50, .4)
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(220, 50, 50, 0)
+      }
+    }
+
+    .emo-bar {
+      position: absolute;
+      top: 20px;
+      left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .epill {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(253, 240, 244, .9);
+      border: 1px solid var(--bdim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+      transition: all .2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .epill:hover,
+    .epill.on {
+      background: var(--glow);
+      border-color: var(--border);
+    }
+
+    /* ── PANEL ── */
+    .panel {
+      width: 355px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: rgba(253, 240, 244, .99);
+      border-left: 1px solid var(--bdim);
+      position: relative;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), transparent);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--bdim);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 1.5px solid transparent;
+      margin-bottom: -1px;
+      transition: all .2s;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .tab.on {
+      color: var(--rose);
+      border-bottom-color: var(--rose);
+    }
+
+    .tc {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .tc.on {
+      display: flex;
+    }
+
+    /* CHAT */
+    .msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--bdim) transparent;
+    }
+
+    .msg {
+      max-width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      animation: mi .25s ease;
+    }
+
+    @keyframes mi {
+      from {
+        opacity: 0;
+        transform: translateY(5px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .msg.vera {
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+    }
+
+    .mlbl {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 3px;
+    }
+
+    .msg.user .mlbl {
+      text-align: right;
+    }
+
+    .bubble {
+      padding: 11px 14px;
+      border-radius: 13px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .msg.vera .bubble {
+      background: var(--s1);
+      border: 1px solid var(--bdim);
+      color: var(--deep);
+      border-bottom-left-radius: 3px;
+    }
+
+    .msg.user .bubble {
+      background: linear-gradient(135deg, var(--rose), #c04575);
+      border: none;
+      color: white;
+      border-bottom-right-radius: 3px;
+    }
+
+    .tdots {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 15px;
+      background: var(--s1);
+      border: 1px solid var(--bdim);
+      border-radius: 13px;
+      border-bottom-left-radius: 3px;
+    }
+
+    .tdots span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rose);
+      opacity: .3;
+      animation: td 1.2s infinite;
+    }
+
+    .tdots span:nth-child(2) {
+      animation-delay: .15s
+    }
+
+    .tdots span:nth-child(3) {
+      animation-delay: .3s
+    }
+
+    @keyframes td {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: .3
+      }
+
+      30% {
+        transform: translateY(-5px);
+        opacity: 1
+      }
+    }
+
+    .qrs {
+      padding: 9px 13px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      border-top: 1px solid var(--bdim);
+    }
+
+    .qr {
+      padding: 5px 12px;
+      border-radius: 18px;
+      background: transparent;
+      border: 1px solid var(--bdim);
+      color: var(--muted);
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .qr:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+      background: var(--glow);
+    }
+
+    .inp-row {
+      padding: 12px 13px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-top: 1px solid var(--bdim);
+    }
+
+    .cin {
+      flex: 1;
+      background: var(--s1);
+      border: 1px solid var(--bdim);
+      border-radius: 22px;
+      padding: 10px 16px;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .cin::placeholder {
+      color: var(--muted);
+    }
+
+    .cin:focus {
+      border-color: var(--rose);
+    }
+
+    .sbtn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--rose), #c04575);
+      border: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      box-shadow: 0 4px 14px rgba(232, 105, 154, .4);
+    }
+
+    .sbtn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 22px rgba(232, 105, 154, .6);
+    }
+
+    /* SCAN tab */
+    .scan-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slabel {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .upload-box {
+      border: 1.5px dashed rgba(232, 105, 154, .35);
+      border-radius: 13px;
+      padding: 26px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--glow);
+    }
+
+    .upload-box:hover {
+      border-color: var(--rose);
+      background: rgba(232, 105, 154, .08);
+    }
+
+    .upload-ico {
+      font-size: 30px;
+      display: block;
+      margin-bottom: 9px;
+    }
+
+    .upload-t {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .res-card {
+      display: none;
+      border-radius: 13px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .res-card.real {
+      background: rgba(34, 197, 94, .07);
+      border-color: rgba(34, 197, 94, .25);
+      color: #166534;
+    }
+
+    .res-card.fake {
+      background: rgba(239, 68, 68, .07);
+      border-color: rgba(239, 68, 68, .25);
+      color: #991b1b;
+    }
+
+    .res-card.chk {
+      background: var(--glow);
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .verd {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .reas {
+      font-size: 12.5px;
+      opacity: .85;
+    }
+
+    .sprev {
+      display: none;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--bdim);
+    }
+
+    .sprev img {
+      width: 100%;
+      display: block;
+    }
+
+    /* TASKS tab */
+    .tasks-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .titem {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 13px;
+      border-radius: 10px;
+      background: var(--s1);
+      border: 1px solid var(--bdim);
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .titem:hover {
+      border-color: var(--border);
+    }
+
+    .titem.done {
+      opacity: .38;
+    }
+
+    .titem.done .tlbl {
+      text-decoration: line-through;
+    }
+
+    /* MODAL */
+    .moverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(61, 26, 46, .55);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .moverlay.open {
+      display: flex;
+    }
+
+    .mbox {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 32px;
+      width: 390px;
+      box-shadow: 0 24px 64px rgba(61, 26, 46, .25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mbox::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--rose), transparent);
+    }
+
+    .mbox h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--deep);
+      margin-bottom: 6px;
+    }
+
+    .mbox p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .mbox a {
+      color: var(--rose);
+    }
+
+    .min {
+      width: 100%;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 15px;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 13px;
+      transition: border-color .2s;
+    }
+
+    .min:focus {
+      border-color: var(--rose);
+    }
+
+    .min::placeholder {
+      color: var(--muted);
+    }
+
+    .mbtns {
+      display: flex;
+      gap: 9px;
+    }
+
+    .msave {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--rose), #c04575);
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(232, 105, 154, .4);
+      transition: all .2s;
+    }
+
+    .msave:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px rgba(232, 105, 154, .6);
+    }
+
+    .mcancel {
+      padding: 11px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--bdim);
+      color: var(--muted);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="logo">
+      <div class="logo-gem">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3L21 9V15L12 21L3 15V9L12 3Z" stroke="white" stroke-width="1.8" fill="rgba(255,255,255,.2)" />
+          <circle cx="12" cy="12" r="2.8" fill="white" />
+          <path d="M12 7v1.5M12 15.5V17M7 12h1.5M15.5 12H17" stroke="white" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div class="logo-text">
+        SCANSURE
+        <span class="logo-sub">AI Verification</span>
+      </div>
+    </div>
+    <div>
+      <div class="status-pill">
+        <div class="dot"></div>
+        <span id="stxt">Vera is ready</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="hbtn" id="vbtn" onclick="toggleVoice()">🔊 Voice On</button>
+      <button class="hbtn" id="abtn" onclick="openModal()">✦ Add API Key</button>
+    </div>
+  </header>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- AVATAR ZONE -->
+    <div class="av-zone">
+      <div class="av-ring"></div>
+      <div class="av-ring2"></div>
+
+      <div class="avatar-wrap">
+        <svg viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg" id="avatarSvg">
+          <defs>
+            <radialGradient id="skinGradient" cx="0.4" cy="0.4" r="0.6">
+              <stop offset="0%" stop-color="#ffe4d6" />
+              <stop offset="50%" stop-color="#ffdbcb" />
+              <stop offset="100%" stop-color="#f5c4b0" />
+            </radialGradient>
+
+            <radialGradient id="skinShadow" cx="0.6" cy="0.6" r="0.5">
+              <stop offset="0%" stop-color="#f5c4b0" />
+              <stop offset="100%" stop-color="#e8b4a0" />
+            </radialGradient>
+
+            <linearGradient id="hairGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8b6f47" />
+              <stop offset="50%" stop-color="#a0826d" />
+              <stop offset="100%" stop-color="#6b5637" />
+            </linearGradient>
+
+            <radialGradient id="irisGradient" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stop-color="#8b6f47" />
+              <stop offset="70%" stop-color="#5c4a30" />
+              <stop offset="100%" stop-color="#3d3120" />
+            </radialGradient>
+
+            <linearGradient id="lipGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e8919c" />
+              <stop offset="50%" stop-color="#d67b87" />
+              <stop offset="100%" stop-color="#c76572" />
+            </linearGradient>
+
+            <linearGradient id="innerMouthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5c2a33" />
+              <stop offset="50%" stop-color="#3d1c22" />
+              <stop offset="100%" stop-color="#2a1216" />
+            </linearGradient>
+
+            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+
+            <clipPath id="eyeClip">
+              <path d="M -30 0 Q 0 -26 30 0 Q 0 26 -30 0" />
+            </clipPath>
+          </defs>
+
+          <circle cx="250" cy="300" r="200" fill="url(#skinShadow)" opacity="0.1" filter="url(#softGlow)">
+            <animate attributeName="r" values="200;205;200" dur="4s" repeatCount="indefinite" />
+          </circle>
+
+          <path
+            d="M 120 250 Q 90 180 150 140 Q 200 100 250 105 Q 300 100 350 140 Q 410 180 380 250 Q 410 320 380 380 Q 350 440 320 480 L 180 480 Q 150 440 120 380 Q 90 320 120 250"
+            fill="url(#hairGradient)" opacity="0.9">
+            <animateTransform attributeName="transform" type="rotate" values="-1 250 300; 1 250 300; -1 250 300"
+              dur="6s" repeatCount="indefinite" />
+          </path>
+
+          <path d="M 205 380 L 205 450 Q 205 480 250 480 Q 295 480 295 450 L 295 380" fill="url(#skinShadow)" />
+          <path d="M 215 380 L 215 440 Q 215 460 250 460 Q 285 460 285 440 L 285 380" fill="url(#skinGradient)" />
+
+          <path d="M 150 480 Q 200 450 250 450 Q 300 450 350 480 L 400 600 L 100 600 Z" fill="#2d1f3d"
+            filter="url(#softGlow)" />
+
+          <ellipse cx="250" cy="290" rx="90" ry="110" fill="url(#skinGradient)" />
+          <ellipse cx="250" cy="290" rx="90" ry="110" fill="url(#skinShadow)" opacity="0.3" />
+
+          <ellipse cx="190" cy="310" rx="25" ry="18" fill="#ffb6c1" opacity="0.4" filter="url(#softGlow)" />
+          <ellipse cx="310" cy="310" rx="25" ry="18" fill="#ffb6c1" opacity="0.4" filter="url(#softGlow)" />
+
+          <g id="eyes">
+            <g transform="translate(200, 280)">
+              <path d="M -30 0 Q 0 -26 30 0 Q 0 26 -30 0" fill="#ffffff" />
+              <g id="leftEyeGroup" clip-path="url(#eyeClip)">
+                <circle cx="0" cy="0" r="13" fill="url(#irisGradient)" />
+                <circle cx="0" cy="0" r="6" fill="#1a1a1a" />
+                <circle cx="-5" cy="-5" r="4" fill="white" opacity="0.9" />
+              </g>
+              <g id="leftEyelid" opacity="0">
+                <path d="M -32 0 Q 0 -27 32 0 Q 0 27 -32 0" fill="#ffdbcb" />
+                <path d="M -31 3 Q 0 13 31 3" stroke="#8b6f47" stroke-width="3" fill="none" stroke-linecap="round" />
+              </g>
+            </g>
+
+            <g transform="translate(300, 280)">
+              <path d="M -30 0 Q 0 -26 30 0 Q 0 26 -30 0" fill="#ffffff" />
+              <g id="rightEyeGroup" clip-path="url(#eyeClip)">
+                <circle cx="0" cy="0" r="13" fill="url(#irisGradient)" />
+                <circle cx="0" cy="0" r="6" fill="#1a1a1a" />
+                <circle cx="-5" cy="-5" r="4" fill="white" opacity="0.9" />
+              </g>
+              <g id="rightEyelid" opacity="0">
+                <path d="M -32 0 Q 0 -27 32 0 Q 0 27 -32 0" fill="#ffdbcb" />
+                <path d="M -31 3 Q 0 13 31 3" stroke="#8b6f47" stroke-width="3" fill="none" stroke-linecap="round" />
+              </g>
+            </g>
+          </g>
+
+          <path d="M 175 250 Q 200 235 225 245" stroke="#8b6f47" stroke-width="4" fill="none" opacity="0.9"
+            stroke-linecap="round" />
+          <path d="M 275 245 Q 300 235 325 250" stroke="#8b6f47" stroke-width="4" fill="none" opacity="0.9"
+            stroke-linecap="round" />
+
+          <path d="M 250 290 L 243 340 Q 250 348 257 340 L 250 290" fill="url(#skinShadow)" opacity="0.4" />
+          <path d="M 240 335 Q 250 345 260 335" stroke="#d4a594" stroke-width="2" fill="none" opacity="0.6" />
+
+          <g id="mouthGroup" transform="translate(250, 365)">
+            <g id="mouthClosed">
+              <path d="M -25 0 Q -12 -6 0 -4 Q 12 -6 25 0 Q 12 4 0 2 Q -12 4 -25 0" fill="url(#lipGradient)" />
+              <path d="M -25 0 Q -12 10 0 12 Q 12 10 25 0 Q 12 4 0 6 Q -12 4 -25 0" fill="url(#lipGradient)"
+                opacity="0.9" />
+              <ellipse cx="-10" cy="4" rx="6" ry="3" fill="white" opacity="0.4" filter="url(#softGlow)" />
+            </g>
+
+            <g id="mouthSlight" opacity="0" transform="scale(0.8)">
+              <path d="M -22 -2 Q 0 -8 22 -2 Q 28 8 22 18 Q 0 24 -22 18 Q -28 8 -22 -2" fill="url(#lipGradient)" />
+              <ellipse cx="0" cy="8" rx="12" ry="8" fill="url(#innerMouthGradient)" />
+              <path d="M -10 -2 Q 0 -4 10 -2 L 8 3 Q 0 5 -8 3 Z" fill="#ffffff" opacity="0.9" />
+            </g>
+
+            <g id="mouthMedium" opacity="0" transform="scale(0.9)">
+              <path d="M -20 -3 Q 0 -10 20 -3 Q 30 10 20 22 Q 0 28 -20 22 Q -30 10 -20 -3" fill="url(#lipGradient)" />
+              <ellipse cx="0" cy="10" rx="14" ry="12" fill="url(#innerMouthGradient)" />
+              <ellipse cx="0" cy="14" rx="8" ry="6" fill="#d67b87" opacity="0.6" />
+              <path d="M -12 -3 Q 0 -6 12 -3 L 10 4 Q 0 6 -10 4 Z" fill="#ffffff" opacity="0.9" />
+            </g>
+
+            <g id="mouthWide" opacity="0">
+              <path d="M -25 -5 Q 0 -15 25 -5 Q 35 12 25 28 Q 0 35 -25 28 Q -35 12 -25 -5" fill="url(#lipGradient)" />
+              <ellipse cx="0" cy="12" rx="18" ry="16" fill="url(#innerMouthGradient)" />
+              <ellipse cx="0" cy="18" rx="12" ry="10" fill="#e8919c" opacity="0.7" />
+              <path d="M -15 -4 Q 0 -8 15 -4 L 12 5 Q 0 8 -12 5 Z" fill="#ffffff" opacity="0.95" />
+              <ellipse cx="-8" cy="-2" rx="5" ry="3" fill="white" opacity="0.5" />
+            </g>
+
+            <g id="mouthPursed" opacity="0">
+              <ellipse cx="0" cy="0" rx="8" ry="5" fill="#d67b87" />
+              <ellipse cx="0" cy="0" rx="5" ry="3" fill="#5c2a33" />
+              <ellipse cx="0" cy="-2" rx="6" ry="2" fill="url(#lipGradient)" />
+              <ellipse cx="0" cy="2" rx="6" ry="2" fill="url(#lipGradient)" />
+            </g>
+          </g>
+
+          <g id="frontHair">
+            <path d="M 160 170 Q 130 220 145 320 Q 150 370 170 420 L 185 410 Q 165 350 175 260 Q 180 190 200 150"
+              fill="url(#hairGradient)" opacity="0.95">
+              <animateTransform attributeName="transform" type="rotate" values="0 160 170; 3 160 170; 0 160 170"
+                dur="5s" repeatCount="indefinite" />
+            </path>
+            <path d="M 340 170 Q 370 220 355 320 Q 350 370 330 420 L 315 410 Q 335 350 325 260 Q 320 190 300 150"
+              fill="url(#hairGradient)" opacity="0.95">
+              <animateTransform attributeName="transform" type="rotate" values="0 340 170; -3 340 170; 0 340 170"
+                dur="5s" repeatCount="indefinite" />
+            </path>
+            <path
+              d="M 160 160 Q 200 130 250 135 Q 300 130 340 160 Q 325 190 310 185 Q 250 200 190 185 Q 175 190 160 160"
+              fill="url(#hairGradient)" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="av-fade"></div>
+
+      <!-- Emotion strip -->
+      <div class="emo-bar">
+        <button class="epill on" id="e-neutral" onclick="setEmo('neutral')" title="Neutral">😐</button>
+        <button class="epill" id="e-happy" onclick="setEmo('happy')" title="Happy">😊</button>
+        <button class="epill" id="e-think" onclick="setEmo('think')" title="Thinking">🤔</button>
+        <button class="epill" id="e-wow" onclick="setEmo('wow')" title="Surprised">😮</button>
+      </div>
+
+      <!-- Controls -->
+      <div class="av-ctrls">
+        <button class="cbtn round" id="micbtn" onclick="toggleMic()">🎤</button>
+        <button class="cbtn" onclick="openScanTab()">📷 Scan Product</button>
+      </div>
+
+      <!-- Name badge -->
+      <div class="vera-badge">
+        <div class="waveline" id="waveline"></div>
+        <div class="vera-name">VERA</div>
+        <div class="vera-role">Your AI Beauty Companion</div>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="panel">
+      <div class="tabs">
+        <div class="tab on" onclick="swTab('chat',this)">Chat</div>
+        <div class="tab" onclick="swTab('scan',this)">Scan</div>
+        <div class="tab" onclick="swTab('tasks',this)">Tasks</div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="tc on" id="tc-chat">
+        <div class="msgs" id="msgs"></div>
+        <div class="qrs">
+          <button class="qr" onclick="qs('Is this product safe?')">Safe to use?</button>
+          <button class="qr" onclick="qs('What are the ingredients?')">Ingredients?</button>
+          <button class="qr" onclick="qs('Where to buy original?')">Buy original?</button>
+          <button class="qr" onclick="qs('Is this product fake?')">Fake check?</button>
+          <button class="qr" onclick="qs('Best skin care routine?')">Skin routine?</button>
+        </div>
+        <div class="inp-row">
+          <label class="sbtn"
+            style="background: transparent; border: 1px solid var(--border); color: var(--deep); box-shadow: none; cursor: pointer; text-align: center; line-height: 38px; display: block; padding: 0;"
+            title="Upload Product Photo">
+            📷
+            <input type="file" accept="image/*" style="display:none" onchange="doScan(event)">
+          </label>
+          <input class="cin" id="cin" placeholder="Ask Vera anything…" onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="sbtn" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+
+      <!-- SCAN -->
+      <div class="tc" id="tc-scan">
+        <div class="scan-inner">
+          <p class="slabel">Upload a photograph of any cosmetic product. Vera will examine the packaging, labels and
+            seals to determine its authenticity.</p>
+          <div class="upload-box" onclick="document.getElementById('sfile').click()">
+            <span class="upload-ico">✦</span>
+            <div class="upload-t">Upload product photograph</div>
+            <div style="font-size:11px;color:var(--muted);opacity:.5;margin-top:4px">JPG · PNG · WEBP</div>
+          </div>
+          <input type="file" id="sfile" accept="image/*" style="display:none" onchange="doScan(event)">
+          <div class="sprev" id="sprev"><img id="simg" alt="product"></div>
+          <div class="res-card" id="rescard">
+            <div class="verd" id="verdict"></div>
+            <div
+              style="width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--rose),transparent);margin:8px 0">
+            </div>
+            <div class="reas" id="reason"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASKS -->
+      <div class="tc" id="tc-tasks">
+        <div class="tasks-inner" id="tlist"></div>
+        <div class="inp-row">
+          <input class="cin" id="tin" placeholder="Add a task or reminder…"
+            onkeydown="if(event.key==='Enter')addTask()">
+          <button class="sbtn" onclick="addTask()">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="moverlay" id="modal">
+    <div class="mbox">
+      <h3>API Key</h3>
+      <p>Get your free key at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> — no credit
+        card needed. This unlocks Vera's full AI capabilities.</p>
+      <input class="min" id="mkey" type="password" placeholder="AIzaSy… paste your key here">
+      <div class="mbtns">
+        <button class="mcancel" onclick="closeModal()">Cancel</button>
+        <button class="msave" onclick="saveKey()">Activate Vera</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═════════════════════════════════════════
+    // VERA ANIMATION ENGINE — Realistic Motion
+    // ═════════════════════════════════════════
+
+    let talking = false;
+    let emo = 'neutral';
+    let voiceOn = true;
+    let gemKey = localStorage.getItem('ss_gk') || '';
+    let listening = false;
+    let recog = null;
+
+    const veraSvg = document.getElementById('avatarSvg');
+    let idleT = 0;
+    let lastFrame = performance.now();
+
+    // ── Blink system ──
+    let blinkTimer = 0;
+    let blinkCooldown = 2800 + Math.random() * 3200;
+    let isBlinking = false;
+
+    function doBlink(double = false) {
+      const bL = document.getElementById('leftEyelid');
+      const bR = document.getElementById('rightEyelid');
+      if (!bL || !bR) return;
+
+      // Close
+      bL.setAttribute('opacity', '1');
+      bR.setAttribute('opacity', '1');
+
+      setTimeout(() => {
+        bL.setAttribute('opacity', '0');
+        bR.setAttribute('opacity', '0');
+        isBlinking = false;
+        blinkCooldown = 2500 + Math.random() * 3500;
+        blinkTimer = 0;
+
+        // Occasionally do a double blink
+        if (double) {
+          setTimeout(() => {
+            bL.setAttribute('opacity', '1'); bR.setAttribute('opacity', '1');
+            setTimeout(() => { bL.setAttribute('opacity', '0'); bR.setAttribute('opacity', '0'); }, 120);
+          }, 250);
+        }
+      }, 140);
+    }
+
+    // ── Pupil tracking (subtle mouse-following) ──
+    let mouseX = 250, mouseY = 300;
+
+    document.addEventListener('mousemove', e => {
+      const rect = veraSvg.getBoundingClientRect();
+      mouseX = ((e.clientX - rect.left) / rect.width) * 500;
+      mouseY = ((e.clientY - rect.top) / rect.height) * 600;
+    });
+
+    function updatePupils() {
+      const eyeLGroup = document.getElementById('leftEyeGroup');
+      const eyeRGroup = document.getElementById('rightEyeGroup');
+      if (!eyeLGroup || !eyeRGroup) return;
+
+      const maxShift = 4;
+      const dx = mouseX - 250;
+      const dy = mouseY - 300;
+      const moveX = Math.max(-maxShift, Math.min(maxShift, dx * 0.03));
+      const moveY = Math.max(-maxShift, Math.min(maxShift, dy * 0.03));
+
+      eyeLGroup.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+      eyeRGroup.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+    }
+
+    // ── Lip sync mouth shapes ──
+    let mouthTimer = 0;
+    const mouthShapes = ['mouthClosed', 'mouthSlight', 'mouthMedium', 'mouthWide', 'mouthPursed'];
+
+    function updateMouth() {
+      if (talking) {
+        mouthTimer++;
+        if (mouthTimer > 4) {
+          mouthTimer = 0;
+          const randomShape = mouthShapes[Math.floor(Math.random() * mouthShapes.length)];
+          mouthShapes.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.setAttribute('opacity', id === randomShape ? '1' : '0');
+              el.style.transition = 'opacity 0.08s ease';
+            }
+          });
+        }
+      } else {
+        mouthShapes.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.setAttribute('opacity', id === 'mouthClosed' ? '1' : '0');
+        });
+      }
+    }
+
+    // ── Realistic hand/arm wave animation ──
+    let armPhase = 0;
+    let waveActive = false;
+    let waveTimer = 0;
+    const WAVE_INTERVAL = 8000; // wave every 8 seconds
+
+    function updateArms() {
+      armPhase += 0.025;
+      waveTimer += 16;
+
+      // Trigger periodic gentle wave
+      if (waveTimer > WAVE_INTERVAL) {
+        waveActive = true;
+        waveTimer = 0;
+        setTimeout(() => { waveActive = false; }, 2200);
+      }
+
+      // Idle subtle arm float
+      const idleL = Math.sin(idleT * 0.48 + 0.5) * 2.5;
+      const idleR = Math.sin(idleT * 0.52) * 2.5;
+
+      const armL = document.getElementById('arm-left');
+      const armR = document.getElementById('arm-right');
+      const handL = document.getElementById('hand-left');
+      const handR = document.getElementById('hand-right');
+
+      if (!armL || !armR) return;
+
+      if (waveActive || emo === 'happy') {
+        // Right arm wave
+        const waveAngle = Math.sin(armPhase * 3.5) * 14;
+        const waveY = Math.abs(Math.sin(armPhase * 3.5)) * -12;
+        armR.setAttribute('transform', `translate(0, ${waveY + idleR}) rotate(${waveAngle}, 282, 296)`);
+        armL.setAttribute('transform', `translate(0, ${idleL})`);
+
+        // Hand wave more pronounced
+        if (handR) {
+          const handWave = Math.sin(armPhase * 4) * 10;
+          handR.setAttribute('transform', `rotate(${handWave}, 318, 460)`);
+        }
+      } else if (emo === 'wow') {
+        // Both arms slightly raised
+        const raisedL = -6 + Math.sin(idleT * 0.9) * 3;
+        const raisedR = -6 + Math.sin(idleT * 0.8) * 3;
+        armL.setAttribute('transform', `translate(-3, ${raisedL})`);
+        armR.setAttribute('transform', `translate(3, ${raisedR})`);
+      } else if (emo === 'think') {
+        // Left arm raised slightly, right hand near chin
+        armL.setAttribute('transform', `translate(0, ${idleL + 2})`);
+        armR.setAttribute('transform', `translate(5, ${-8 + idleR}) rotate(-12, 282, 296)`);
+        if (handR) handR.setAttribute('transform', `rotate(-8, 318, 460)`);
+      } else {
+        // Natural idle float
+        armL.setAttribute('transform', `translate(0, ${idleL})`);
+        armR.setAttribute('transform', `translate(0, ${idleR})`);
+        if (handL) handL.setAttribute('transform', '');
+        if (handR) handR.setAttribute('transform', '');
+      }
+    }
+
+    // ── Main animation loop ──
+    function animFrame(now) {
+      const dt = Math.min((now - lastFrame) / 1000, 0.05);
+      lastFrame = now;
+      idleT += dt;
+      blinkTimer += dt * 1000;
+
+      // Gentle breathing/idle sway
+      const swayY = Math.sin(idleT * 0.45) * 1.6;
+      const swayR = Math.sin(idleT * 0.32) * 0.7;
+      const floatY = Math.sin(idleT * 0.42) * 2.8;
+
+      // Breathing subtle scale
+      const breathe = 1 + Math.sin(idleT * 0.55) * 0.006;
+
+      let tx = swayY;
+      let ty = floatY;
+      let tr = swayR;
+      let sc = breathe;
+
+      if (emo === 'happy') {
+        sc = breathe * (1 + Math.abs(Math.sin(idleT * 1.8)) * 0.02);
+        ty = floatY - 1;
+      } else if (emo === 'think') {
+        tx = swayY - 3;
+        tr = swayR - 2.5;
+      } else if (emo === 'wow') {
+        ty = floatY - 3.5;
+        sc = breathe * 1.025;
+      }
+
+      veraSvg.style.transform = `translateX(${tx}px) translateY(${ty}px) rotate(${tr}deg) scale(${sc})`;
+      veraSvg.style.transformOrigin = 'center 52%';
+
+      // Blink
+      if (!isBlinking && blinkTimer >= blinkCooldown) {
+        isBlinking = true;
+        doBlink(Math.random() < 0.15); // 15% chance double blink
+      }
+
+      // Mouth
+      updateMouth();
+
+      // Arms
+      updateArms();
+
+      requestAnimationFrame(animFrame);
+    }
+    requestAnimationFrame(animFrame);
+
+    // ── Waveform ──
+    const waveEl = document.getElementById('waveline');
+    const wbars = Array.from({ length: 22 }, () => {
+      const b = document.createElement('div');
+      b.className = 'wb';
+      waveEl.appendChild(b);
+      return b;
+    });
+    setInterval(() => {
+      wbars.forEach((b, i) => {
+        const wave = talking ? Math.abs(Math.sin(Date.now() / 120 + i * 0.4)) * 14 + 2 : 3;
+        b.style.height = wave + 'px';
+        b.classList.toggle('lit', talking);
+      });
+    }, 80);
+
+    // ── Emotion ──
+    function setEmo(e) {
+      emo = e;
+      document.querySelectorAll('.epill').forEach(b => b.classList.remove('on'));
+      document.getElementById('e-' + e).classList.add('on');
+
+      const eyeL = document.getElementById('leftEyeGroup');
+      const eyeR = document.getElementById('rightEyeGroup');
+      if (!eyeL || !eyeR) return;
+
+      if (e === 'happy') {
+        // Eyes squint slightly for genuine smile
+        eyeL.style.transform = 'scaleY(0.88)';
+        eyeL.style.transformOrigin = '160px 163px';
+        eyeR.style.transform = 'scaleY(0.88)';
+        eyeR.style.transformOrigin = '240px 163px';
+        // Trigger a happy blink
+        setTimeout(() => doBlink(false), 400);
+      } else if (e === 'wow') {
+        // Wide open eyes
+        eyeL.style.transform = 'scaleY(1.15)';
+        eyeL.style.transformOrigin = '160px 163px';
+        eyeR.style.transform = 'scaleY(1.15)';
+        eyeR.style.transformOrigin = '240px 163px';
+      } else if (e === 'think') {
+        // One eye slightly squinted
+        eyeL.style.transform = 'scaleY(0.92)';
+        eyeL.style.transformOrigin = '160px 163px';
+        eyeR.style.transform = '';
+      } else {
+        eyeL.style.transform = '';
+        eyeR.style.transform = '';
+      }
+    }
+
+    // ── Status ──
+    function setSt(t) { document.getElementById('stxt').textContent = t; }
+
+    // ── Voice ──
+    function toggleVoice() {
+      voiceOn = !voiceOn;
+      document.getElementById('vbtn').textContent = voiceOn ? '🔊 Voice On' : '🔇 Voice Off';
+      if (!voiceOn) window.speechSynthesis && window.speechSynthesis.cancel();
+    }
+
+    function speakVera(txt) {
+      if (!voiceOn || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.rate = 0.95; u.pitch = 1.14; u.volume = 1;
+      const vs = window.speechSynthesis.getVoices();
+      const fv = vs.find(v => /female|samantha|victoria|zira|karen|google uk english female/i.test(v.name));
+      if (fv) u.voice = fv;
+      u.onstart = () => { talking = true; setSt('Vera is speaking…'); };
+      u.onend = () => { talking = false; setSt('Vera is ready'); };
+      window.speechSynthesis.speak(u);
+    }
+
+    // ── Gemini AI (with built-in fallbacks) ──
+    const FALLBACKS = {
+      default: [
+        "I'm here to help you with all your beauty and cosmetic needs! Try scanning a product or ask me anything.",
+        "That's a great question! For the best answers, add your Gemini API key using the ✦ button above.",
+        "I can help you verify products, check ingredients, and find authentic cosmetics. What would you like to know?",
+        "As your beauty companion, I recommend always checking product authenticity before purchase. Want me to scan something?",
+      ],
+      safe: ["This product should be used as directed. Always patch test new cosmetics. Check for allergens in the ingredients list before applying."],
+      ingredients: ["Please scan the product photo and I'll analyse the full ingredient list for you. I can identify potentially harmful chemicals and allergens."],
+      fake: ["The best way to check authenticity is to scan the product using the 📷 Scan button! I'll analyse the packaging, labels, and barcodes for you."],
+      buy: ["Always buy cosmetics from authorised retailers, brand official stores, or verified e-commerce platforms like Nykaa, Amazon, or the brand's own website."],
+      skin: ["A good basic routine: cleanser → toner → serum → moisturiser → SPF (morning). Keep it simple and consistent for best results!"],
+    };
+
+    function getFallback(q) {
+      const lq = q.toLowerCase();
+      if (lq.includes('safe') || lq.includes('harmful')) return FALLBACKS.safe[0];
+      if (lq.includes('ingredient')) return FALLBACKS.ingredients[0];
+      if (lq.includes('fake') || lq.includes('real') || lq.includes('authentic')) return FALLBACKS.fake[0];
+      if (lq.includes('buy') || lq.includes('original') || lq.includes('where')) return FALLBACKS.buy[0];
+      if (lq.includes('skin') || lq.includes('routine') || lq.includes('care')) return FALLBACKS.skin[0];
+      return FALLBACKS.default[Math.floor(Math.random() * FALLBACKS.default.length)];
+    }
+
+    async function askGemini(q) {
+      if (!gemKey) return getFallback(q);
+      try {
+        const r = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${gemKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: "You are Vera, an elegant and intelligent AI beauty companion for ScanSure — a luxury cosmetic product verification platform in India. Help users verify product authenticity, understand ingredients, get skincare advice, and find genuine products. Be warm, sophisticated and concise — under 60 words. Speak naturally." }]
+              },
+              contents: [{ parts: [{ text: q }] }]
+            })
+          }
+        );
+        if (!r.ok) return getFallback(q);
+        const d = await r.json();
+        return d.candidates?.[0]?.content?.parts?.[0]?.text || getFallback(q);
+      } catch { return getFallback(q); }
+    }
+
+    // ── Chat ──
+    function addMsg(from, txt) {
+      const w = document.getElementById('msgs');
+      const d = document.createElement('div');
+      d.className = 'msg ' + from;
+      d.innerHTML = `<div class="mlbl">${from === 'vera' ? 'Vera' : 'You'}</div><div class="bubble">${txt}</div>`;
+      w.appendChild(d);
+      w.scrollTop = w.scrollHeight;
+    }
+
+    function showTyping() {
+      const w = document.getElementById('msgs');
+      const t = document.createElement('div');
+      t.className = 'tdots'; t.id = 'typing';
+      t.innerHTML = '<span></span><span></span><span></span>';
+      w.appendChild(t); w.scrollTop = w.scrollHeight;
+    }
+    function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+    async function sendChat() {
+      const inp = document.getElementById('cin');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      addMsg('user', txt);
+      showTyping(); setSt('Vera is thinking…'); setEmo('think');
+      const rep = await askGemini(txt);
+      hideTyping();
+      addMsg('vera', rep);
+      speakVera(rep);
+      if (/^(hi|hello|hey)/i.test(txt)) { setEmo('happy'); setTimeout(() => setEmo('neutral'), 3500); }
+      if (/thank|great|amazing|love/i.test(txt)) { setEmo('happy'); setTimeout(() => setEmo('neutral'), 3000); }
+      else { setEmo('neutral'); }
+    }
+
+    function qs(t) { document.getElementById('cin').value = t; sendChat(); }
+
+    // ── Mic ──
+    function toggleMic() {
+      const btn = document.getElementById('micbtn');
+      if (listening) {
+        listening = false; btn.classList.remove('rec'); btn.textContent = '🎤';
+        if (recog) recog.stop(); setSt('Vera is ready'); return;
+      }
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { addMsg('vera', 'Voice input works best in Chrome browser!'); return; }
+      recog = new SR();
+      recog.lang = 'en-IN'; recog.continuous = false; recog.interimResults = false;
+      recog.onstart = () => { listening = true; btn.classList.add('rec'); btn.textContent = '🔴'; setSt('Listening…'); };
+      recog.onresult = e => { document.getElementById('cin').value = e.results[0][0].transcript; sendChat(); };
+      recog.onerror = () => { listening = false; btn.classList.remove('rec'); btn.textContent = '🎤'; setSt('Vera is ready'); };
+      recog.onend = () => { listening = false; btn.classList.remove('rec'); btn.textContent = '🎤'; };
+      recog.start();
+    }
+
+    // ── Scan ──
+    function openScanTab() { swTab('scan', document.querySelectorAll('.tab')[1]); }
+
+    async function doScan(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const sprev = document.getElementById('sprev');
+      document.getElementById('simg').src = URL.createObjectURL(file);
+      sprev.style.display = 'block';
+      const rc = document.getElementById('rescard');
+      const vd = document.getElementById('verdict');
+      const rs = document.getElementById('reason');
+      rc.style.display = 'block'; rc.className = 'res-card chk';
+      vd.textContent = 'Vera is analysing…'; rs.textContent = '';
+      setSt('Scanning product…'); talking = true; setEmo('think');
+
+      if (!gemKey) {
+        setTimeout(() => {
+          talking = false; setEmo('neutral');
+          rc.className = 'res-card fake';
+          vd.textContent = '⚠ Analysis Requires API Key';
+          rs.textContent = 'Add your free Gemini API key using the ✦ button above for full AI product scanning.';
+          setSt('Vera is ready');
+        }, 1800);
+        return;
+      }
+
+      try {
+        const b64 = await toB64(file);
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${gemKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: 'You are a cosmetic product authenticator. Examine this product image carefully. Check packaging quality, font sharpness, logo precision, label alignment, seal integrity, colour accuracy. Respond ONLY in this exact format:\nVERDICT: REAL\nREASON: one sentence explaining why\n\nOR\n\nVERDICT: FAKE\nREASON: one sentence about what looks suspicious' },
+                  { inline_data: { mime_type: file.type, data: b64 } }
+                ]
+              }]
+            })
+          }
+        );
+        if (!res.ok) throw new Error('API error');
+        const d = await res.json();
+        const txt = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const isReal = txt.includes('VERDICT: REAL');
+        const reason = txt.split('REASON:')[1]?.trim() || txt;
+        rc.className = 'res-card ' + (isReal ? 'real' : 'fake');
+        vd.textContent = isReal ? '✦ Authentic Product' : '⚠ Counterfeit Detected';
+        rs.textContent = reason;
+        addMsg('vera', `Scan complete — ${isReal ? '✦ Authentic' : '⚠ Counterfeit'}: ${reason}`);
+        speakVera(isReal ? 'Great news — this product is authentic!' : 'Warning — this product may be counterfeit. Please be careful.');
+        setEmo(isReal ? 'happy' : 'wow');
+        setTimeout(() => setEmo('neutral'), 4000);
+      } catch {
+        rc.className = 'res-card fake';
+        vd.textContent = 'Scan Failed';
+        rs.textContent = 'Please check your API key and internet connection.';
+      }
+      talking = false; setSt('Vera is ready');
+    }
+
+    function toB64(f) {
+      return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result.split(',')[1]);
+        r.onerror = rej;
+        r.readAsDataURL(f);
+      });
+    }
+
+    // ── Tasks ──
+    const tasks = [];
+    async function addTask() {
+      const inp = document.getElementById('tin');
+      const txt = inp.value.trim(); if (!txt) return; inp.value = '';
+      tasks.push({ txt, done: false, id: Date.now() });
+      renderTasks();
+      const rep = await askGemini(`User added this task: "${txt}". Acknowledge it warmly and give one quick helpful tip.`);
+      addMsg('vera', rep); speakVera(rep);
+    }
+    function renderTasks() {
+      const el = document.getElementById('tlist'); el.innerHTML = '';
+      tasks.forEach(t => {
+        const d = document.createElement('div');
+        d.className = 'titem' + (t.done ? ' done' : '');
+        d.innerHTML = `<span style="font-size:15px">${t.done ? '✦' : '◇'}</span><span class="tlbl">${t.txt}</span>`;
+        d.onclick = () => { t.done = !t.done; renderTasks(); };
+        el.appendChild(d);
+      });
+    }
+
+    // ── Modal ──
+    function openModal() { document.getElementById('modal').classList.add('open'); }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+    function saveKey() {
+      const k = document.getElementById('mkey').value.trim(); if (!k) return;
+      gemKey = k; localStorage.setItem('ss_gk', k); closeModal();
+      const b = document.getElementById('abtn');
+      b.textContent = '✦ Vera Active'; b.classList.add('active');
+      b.onclick = null;
+      addMsg('vera', "My full intelligence is now active! I can answer any beauty question and fully analyse your cosmetic products. What would you like to know?");
+      speakVera("I'm fully activated! How may I assist you today?");
+      setEmo('happy'); setTimeout(() => setEmo('neutral'), 3500);
+    }
+
+    // ── Tabs ──
+    function swTab(name, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
+      el.classList.add('on');
+      document.getElementById('tc-' + name).classList.add('on');
+    }
+
+    // ── Init ──
+    if (gemKey) {
+      const b = document.getElementById('abtn');
+      b.textContent = '✦ Vera Active'; b.classList.add('active');
+    }
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    window.onload = () => {
+      setTimeout(() => {
+        const greet = gemKey
+          ? "Welcome back! I'm Vera — how may I assist you today?"
+          : "Good day! I'm Vera, your AI beauty companion. I can answer your questions right now, and you can scan cosmetic products for authenticity. Add your Gemini key for full AI power!";
+        addMsg('vera', greet);
+        setEmo('happy');
+        setTimeout(() => {
+          speakVera("Good day! I'm Vera, your AI beauty companion.");
+          setTimeout(() => setEmo('neutral'), 3200);
+        }, 500);
+      }, 600);
+    };
+  </script>
+</body>
+
+</html>

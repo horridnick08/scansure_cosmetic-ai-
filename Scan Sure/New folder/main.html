@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image to Backend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #preview {
+            margin-top: 20px;
+            max-width: 300px;
+            display: none;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Upload Image</h2>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+
+    <img id="preview" />
+
+    <br>
+    <button onclick="uploadImage()">Upload to Server</button>
+
+    <p id="status"></p>
+
+    <script>
+        const input = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const status = document.getElementById('status');
+
+        let selectedFile;
+
+        // Preview image
+        input.addEventListener('change', function () {
+            selectedFile = this.files[0];
+
+            if (selectedFile) {
+                preview.src = URL.createObjectURL(selectedFile);
+                preview.style.display = 'block';
+            }
+        });
+
+        // Upload function
+        async function uploadImage() {
+            if (!selectedFile) {
+                status.innerText = "Please select an image first!";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", selectedFile); // field name = "image"
+            
+            // The Django backend currently REQUIRES these two fields to be sent from the client
+            formData.append("prediction_label", "Real"); 
+            formData.append("confidence_score", "0.98");
+
+            try {
+                status.innerText = "Uploading...";
+
+                const response = await fetch("http://127.0.0.1:8000/api/scan/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                status.innerText = "Upload successful!";
+                console.log(result);
+
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Upload failed!";
+            }
+        }
+    </script>
+
+</body>
+</html>
