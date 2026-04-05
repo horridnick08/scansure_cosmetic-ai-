@@ -93,4 +93,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Gemini API Key
-GEMINI_API_KEY = 'AIzaSyB0EBmM8_byMT6725DOyGyv7NwM1zpug_E'
+GEMINI_API_KEY = 'AIzaSyDh1Gm3zD6jbPON2rRNtSMw58HMLCzmUlw'

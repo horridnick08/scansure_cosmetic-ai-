@@ -1,27 +1,15 @@
 """
 predictor.py — Model-based Real/Fake prediction for ScanSure
 =============================================================
-Loads model.pkl (sklearn LogisticRegression with 6 features) and converts
-OCR-extracted label data into those 6 features.
-
-Feature vector (6 values, all 0-1):
-  [0] has_brand            — 1 if OCR found a brand name
-  [1] has_product          — 1 if OCR found a product name
-  [2] has_barcode          — 1 if a barcode / EAN was decoded
-  [3] has_batch            — 1 if a batch/lot number was detected
-  [4] ingredient_count_norm — min(n_ingredients, 10) / 10.0
-  [5] text_length_norm      — min(len(raw_text), 500) / 500.0
-
-Genuine products typically have all labels present and a long ingredient list.
-Counterfeits often miss barcodes, batch numbers, or ingredients.
+Loads scansure_classifier.keras (trained Keras model) and converts
+OCR-extracted label data into those features.
 """
 
 import os
-import pickle
 import numpy as np
 
 # ── Load model once at import time ──────────────────────────────────────────
-_MODEL_PATH = os.path.join(os.path.dirname(__file__), "model.pkl")
+_MODEL_PATH = r"C:\Users\rohit\Downloads\ss zip\ScanSure\New folder\scansure_classifier.keras"
 _model = None
 
 def _load_model():
@@ -29,11 +17,17 @@ def _load_model():
     if _model is None:
         if not os.path.exists(_MODEL_PATH):
             raise FileNotFoundError(
-                f"model.pkl not found at {_MODEL_PATH}. "
-                "Run the training script to generate it."
+                f"Keras model not found at {_MODEL_PATH}. "
+                "Please ensure scansure_classifier.keras is in the New folder."
             )
-        with open(_MODEL_PATH, "rb") as f:
-            _model = pickle.load(f)
+        try:
+            import tensorflow as tf
+            # Load the Keras model
+            _model = tf.keras.models.load_model(_MODEL_PATH)
+        except ImportError:
+            raise ImportError("tensorflow is not installed. Please run: pip install tensorflow")
+        except Exception as e:
+            raise RuntimeError(f"Error loading Keras model: {str(e)}")
     return _model
 
 
@@ -50,6 +44,7 @@ def extract_features(ocr_data: dict) -> np.ndarray:
     raw_text = ocr_data.get("raw_text") or ""
     text_length_norm = min(len(raw_text), 500) / 500.0
 
+    # Ensure shape is (1, 6) for Keras
     features = np.array([[
         has_brand,
         has_product,
@@ -57,40 +52,54 @@ def extract_features(ocr_data: dict) -> np.ndarray:
         has_batch,
         ingredient_count_norm,
         text_length_norm,
-    ]])
+    ]], dtype=np.float32)
     return features
 
 
 def predict(ocr_data: dict) -> dict:
     """
-    Run the model on OCR data and return a prediction dict:
-      {
-        "label":      "Real" | "Fake",
-        "confidence": float  (0.0 – 1.0, probability of predicted class)
-      }
-    Falls back to rule-based heuristic if model.pkl is unavailable.
+    Runs the Keras model on OCR data.
+    If the model expects a different shape (e.g. image input), logs error and falls back.
     """
     try:
         model = _load_model()
         features = extract_features(ocr_data)
 
-        label_int   = int(model.predict(features)[0])           # 1=Real, 0=Fake
-        proba       = model.predict_proba(features)[0]          # [P(Fake), P(Real)]
-        confidence  = float(proba[label_int])
+        # ── Step 1: Run prediction ──────────────────────────────────────────
+        # model.predict returns a 2D array: (1, n_classes)
+        preds = model.predict(features, verbose=0) 
+        
+        # ── Step 2: Interpret results ───────────────────────────────────────
+        if preds.shape[1] == 1:
+            # Binary sigmoid output [prob_of_real]
+            confidence = float(preds[0][0])
+            label_int = 1 if confidence >= 0.5 else 0
+            if label_int == 0: 
+                confidence = 1.0 - confidence # Return probability of 'Fake' if that's the label
+        else:
+            # Softmax output [prob_fake, prob_real]
+            label_int = int(np.argmax(preds[0]))
+            confidence = float(preds[0][label_int])
 
         return {
             "label":      "Real" if label_int == 1 else "Fake",
             "confidence": round(confidence, 4),
-            "source":     "model"
+            "source":     "keras_model"
         }
 
-    except FileNotFoundError:
+    except Exception as e:
         # Graceful fallback: rule-based heuristic
         feats = extract_features(ocr_data)
         score = float(np.mean(feats))          # avg of 6 binary/norm features
         label = "Real" if score >= 0.4 else "Fake"
+        
+        error_msg = str(e)
+        # Simplify common Keras value errors for readability
+        if "input" in error_msg.lower() and "shape" in error_msg.lower():
+            error_msg = "Model input shape mismatch. Is this an image model?"
+
         return {
             "label":      label,
             "confidence": round(score, 4),
-            "source":     "heuristic"          # model.pkl not found
+            "source":     f"heuristic (Error: {error_msg})" 
         }

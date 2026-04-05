@@ -15,6 +15,12 @@ def extract_text(image_path):
     if img is None:
         print("Error: Image not found")
         return ""
+    
+    # ── High Resolution Pre-processing ──
+    # Upscale 2x using bicubic interpolation for better small text OCR
+    height, width = img.shape[:2]
+    img = cv2.resize(img, (width * 2, height * 2), interpolation=cv2.INTER_CUBIC)
+    
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Apply threshold (improves OCR)
