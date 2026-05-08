@@ -194,7 +194,6 @@
       border-left: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      min-height: 0;
       box-shadow: -24px 0 60px rgba(61,26,46,.18);
       transform: translateX(100%);
       transition: transform .32s cubic-bezier(.4,0,.2,1);
@@ -252,17 +251,12 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      padding: 16px 16px 12px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       scrollbar-width: thin;
       scrollbar-color: var(--bdim) transparent;
-      max-height: calc(100vh - 120px);
-    }
-
-    .hist-drawer {
-      min-height: 0;
     }
 
     .hist-empty {
@@ -283,6 +277,7 @@
 
     /* Scan record card */
     .hrec {
+      flex-shrink: 0;
       background: var(--s1);
       border: 1px solid var(--bdim);
       border-radius: 13px;
@@ -301,24 +296,10 @@
     .hrec.fake { border-left: 3px solid rgba(239,68,68,.5); }
 
     .hrec-head {
-      padding: 12px 14px 10px;
+      padding: 10px 13px 8px;
       display: flex;
       align-items: center;
       gap: 9px;
-      flex-wrap: wrap;
-      row-gap: 6px;
-    }
-    .hrec-num {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: .7px;
-      text-transform: uppercase;
-      padding: 4px 9px;
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 999px;
-      background: rgba(255,255,255,.85);
-      flex-shrink: 0;
     }
     .hrec-badge {
       padding: 3px 10px;
@@ -362,10 +343,6 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      min-height: 90px;
-    }
-    .hrec {
-      position: relative;
     }
     .hrec-row {
       display: flex;
@@ -384,7 +361,8 @@
     }
     .hrec-val {
       color: var(--deep);
-      word-break: break-all;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
     .hrec-val.missing { color: var(--muted); font-style: italic; opacity:.55; }
 
@@ -2216,22 +2194,13 @@
     }
 
     // ── Scan ──
-    function openScanTab() {
-      const scanTab = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.trim().toLowerCase() === 'scan');
-      if (scanTab) {
-        swTab('scan', scanTab);
-        return;
-      }
-      const tabs = document.querySelectorAll('.tab');
-      if (tabs.length > 1) swTab('scan', tabs[1]);
-    }
+    function openScanTab() { swTab('scan', document.querySelectorAll('.tab')[1]); }
 
     // Slot state
     const slotFiles = { front: null, back: null };
 
     function setSlotImage(slot, file) {
       if (!file || !file.type.startsWith('image/')) return;
-      openScanTab();
       slotFiles[slot] = file;
       const imgEl  = document.getElementById(slot === 'front' ? 'imgFront' : 'imgBack');
       const prevEl = document.getElementById(slot === 'front' ? 'prevFront' : 'prevBack');
@@ -2263,8 +2232,10 @@
     }
 
     function triggerMultiScan() {
-      const files = { front: slotFiles.front, back: slotFiles.back };
-      if (!files.front && !files.back) return;
+      const files = [];
+      if (slotFiles.front) files.push(slotFiles.front);
+      if (slotFiles.back)  files.push(slotFiles.back);
+      if (files.length === 0) return;
       startScan(files);
     }
 
@@ -2277,9 +2248,6 @@
       if (files[0]) setSlotImage('front', files[0]);
       if (files[1]) setSlotImage('back',  files[1]);
       e.target.value = '';
-      if (files.length > 0) {
-        triggerMultiScan();
-      }
     }
 
     // Drag-and-drop onto a specific slot
@@ -2401,34 +2369,22 @@
      * to the Django backend as image_front, image_back, …
      */
     async function startScan(files) {
-      const slotUpload = !Array.isArray(files) && files && (files.front || files.back);
-      let imageCount = 0;
-      if (slotUpload) {
-        imageCount = (files.front ? 1 : 0) + (files.back ? 1 : 0);
-      } else {
-        if (!Array.isArray(files)) files = [files];
-        imageCount = files.length;
-      }
-      openScanTab();
+      if (!Array.isArray(files)) files = [files];
 
       document.getElementById('uploadArea').style.display = 'none';
       document.getElementById('rescard').style.display = 'none';
       document.getElementById('scanAgainBtn').style.display = 'none';
 
-      setSt(`Scanning ${imageCount} image${imageCount > 1 ? 's' : ''}…`);
+      setSt(`Scanning ${files.length} image${files.length > 1 ? 's' : ''}…`);
       talking = true; setEmo('think');
 
+      const imageCount = files.length;
       setScanProgress(`📤 Analyzing ${imageCount} image${imageCount > 1 ? 's' : ''} with OCR & AI…`);
 
       try {
         const fd = new FormData();
-        if (slotUpload) {
-          if (files.front) fd.append('image_front', files.front);
-          if (files.back) fd.append('image_back',  files.back);
-        } else {
-          const fieldNames = ['image_front', 'image_back', 'image_3', 'image_4', 'image_5'];
-          files.forEach((f, i) => fd.append(fieldNames[i] || `image_${i+1}`, f));
-        }
+        const fieldNames = ['image_front', 'image_back', 'image_3', 'image_4', 'image_5'];
+        files.forEach((f, i) => fd.append(fieldNames[i] || `image_${i+1}`, f));
         
         const backendRes = await fetch('http://127.0.0.1:8000/api/scan/', {
           method: 'POST', body: fd
@@ -2447,9 +2403,7 @@
         document.getElementById('resIcon').textContent = isReal ? '✦' : '⚠';
         document.getElementById('verdict').textContent = isReal ? 'Authentic Product' : 'Counterfeit Detected';
         
-        const reasonStr = data.ai_reason || (data.model_prediction
-          ? `${data.model_prediction} (ML Confidence: ${(data.model_confidence * 100).toFixed(1)}%)`
-          : 'Scan completed, but no detailed reasoning is available.');
+        const reasonStr = data.ai_reason || data.model_prediction + " (ML Confidence: " + (data.model_confidence*100).toFixed(1) + "%)";
         document.getElementById('reason').textContent = reasonStr;
 
         document.getElementById('resDetails').innerHTML = buildDetailsHTML({
@@ -2479,11 +2433,7 @@
         
         setEmo(isReal ? 'happy' : 'wow');
         lastScanId = data.id;
-        openScanTab();
         loadChatHistory(lastScanId);
-        if (document.getElementById('histOverlay').classList.contains('open')) {
-          fetchHistory();
-        }
         setTimeout(() => setEmo('neutral'), 5000);
 
       } catch (err) {
@@ -2609,13 +2559,8 @@
       }
 
       body.innerHTML = '';
-      const ordered = records.slice().sort((a, b) => {
-        const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-        const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
-        return tb - ta; // newest first
-      });
 
-      ordered.forEach((r, idx) => {
+      records.forEach(r => {
         const label   = (r.prediction_label || '').toLowerCase();
         const isReal  = label === 'real';
         const isFake  = label === 'fake';
@@ -2642,10 +2587,8 @@
 
         const card = document.createElement('div');
         card.className = `hrec ${cls}`;
-        const scanLabel = `Scan ${idx + 1}`;
         card.innerHTML = `
           <div class="hrec-head">
-            <span class="hrec-num">${scanLabel}</span>
             <span class="hrec-badge ${cls}">${badge}</span>
             <span class="hrec-brand">${r.brand || r.product || 'Unknown Product'}</span>
             <span class="hrec-conf">${conf}</span>

@@ -155,7 +155,7 @@ class ScanAPIView(APIView):
                 "image_path":      relative_paths[0],
                 "image_paths":     relative_paths,
                 "images_received": len(image_files),
-                "timestamp":       scan_record.timestamp,
+                "timestamp":       scan_record.timestamp.isoformat(),
             }, status=status.HTTP_201_CREATED)
 
         except ValueError:
